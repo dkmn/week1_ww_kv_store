@@ -6,6 +6,8 @@ import scala.collection.immutable.HashMap
 
 /**
   * An Actor that implements a crude key-value store backed by a mutable map.
+  * assignment for Week 1 of SCALA 230 A: Concurrent and Reactive Programming in Akka
+  * David K. Kim (david@radardoc.net) 13 April 2016
   */
 object KvStoreActor {
   // It's a good practice to put the following here as a convenience for
@@ -30,7 +32,7 @@ object KvStoreActor {
 class KvStoreActor extends Actor with ActorLogging {
   import KvStoreActor._
 
-  // TODO 1:Create a scala.collection.immutable.HashMap and capture it in a var.
+  // DONE 1:Create a scala.collection.immutable.HashMap and capture it in a var.
   //        We favorable having a var that refers to an immutable map so that
   //        in the event we ever publish or share the map beyond the context of
   //        this actor, we know it won't be mutated in some other execution
@@ -41,7 +43,7 @@ class KvStoreActor extends Actor with ActorLogging {
   //        Actor), we derive safety benefits.
   var kvMap  = new scala.collection.immutable.HashMap[String, String]
 
-  // TODO 2:Implement the receive method for the KvStoreActor.
+  // DONE 2:Implement the receive method for the KvStoreActor.
   //        The KvStoreActor must respond to the messages below, as specified.
   //
   //         GetSize: return a Size message carrying the size of the map.
@@ -69,9 +71,9 @@ class KvStoreActor extends Actor with ActorLogging {
       kvMap += (key -> value)
 
     case Get(key) =>
-      log.info("Message Get received: Returning Option-wrapped value from HashMap, using passed-in Key")
-      var valueOption = Option(kvMap.get(key))
-      sender() ! valueOption
+      log.info("Message Get received: Returning Option-wrapped value from HashMap (default type from Map.get), using passed-in Key")
+      var valueOption = kvMap.get(key)
+      sender() ! Value(valueOption)
 
     case Delete(key: String) =>
       log.info("Message Delete received: Returning Option-wrapped value from HashMap, using passed-in Key")
