@@ -61,17 +61,25 @@ class KvStoreActor extends Actor with ActorLogging {
   //
   override def receive: Receive = {
     case GetSize =>
-      log.info("Returning kvMap size using underlying size method of HashMap")
+      log.info("Message GetSize received: Returning kvMap size using underlying size method of HashMap")
       sender() ! Size(kvMap.size)    // Reply to size query
 
     case Put(key,value) =>
-      log.info("Updating internal key-value store in HashMap")
-      kvMap += (key, value)
+      log.info("Message Put received: Updating internal key-value store in HashMap")
+      kvMap += (key -> value)
 
     case Get(key) =>
-      Option(kvMap.get(key))
+      log.info("Message Get received: Returning Option-wrapped value from HashMap, using passed-in Key")
+      var valueOption = Option(kvMap.get(key))
+      sender() ! valueOption
 
+    case Delete(key: String) =>
+      log.info("Message Delete received: Returning Option-wrapped value from HashMap, using passed-in Key")
+      kvMap -= key
 
+    case GetKeys =>
+      log.info("Message GetKeys received: Returning Set of key values")
+      sender() ! Keys(kvMap.keySet)
 
   }
 }
