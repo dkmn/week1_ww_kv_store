@@ -39,7 +39,7 @@ class KvStoreActor extends Actor with ActorLogging {
   //        are by construction thread safe, and if we can only change the
   //        var referring to such an object from one context (i.e. in our
   //        Actor), we derive safety benefits.
-  var kvMap = ???
+  var kvMap  = new scala.collection.immutable.HashMap[String, String]
 
   // TODO 2:Implement the receive method for the KvStoreActor.
   //        The KvStoreActor must respond to the messages below, as specified.
@@ -59,5 +59,19 @@ class KvStoreActor extends Actor with ActorLogging {
   //
   //         GetKeys: Return a set of the keys in the map.
   //
-  override def receive: Receive = ???
+  override def receive: Receive = {
+    case GetSize =>
+      log.info("Returning kvMap size using underlying size method of HashMap")
+      sender() ! Size(kvMap.size)    // Reply to size query
+
+    case Put(key,value) =>
+      log.info("Updating internal key-value store in HashMap")
+      kvMap += (key, value)
+
+    case Get(key) =>
+      Option(kvMap.get(key))
+
+
+
+  }
 }
